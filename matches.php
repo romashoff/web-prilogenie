@@ -8,8 +8,14 @@ $matches = $pdo->query('SELECT `matches`.* FROM `matches` ORDER BY `matches`.`mc
 
 $teams1 = array_column($matches, 'mch_team1_id');
 $teams2 = array_column($matches, 'mch_team2_id');
+
+
 $teamsIds = array_unique(array_merge($teams1, $teams2));
+
+
 $teams = $pdo->query('SELECT `teams`.* FROM `teams` WHERE `teams`.`ts_id` IN (' . implode(',', $teamsIds) . ')')->fetchAll();
+
+
 foreach ($teams as $team) {
     $teamsName[$team['ts_id']] = $team['ts_name'];
 }
@@ -41,6 +47,7 @@ require_once __DIR__ . '/head.php';
         <th>ID</th>
         <th>Команды</th>
         <th>Счет</th>
+        <th>Подробнее</th>
     </tr>
     </thead>
     <tbody>
@@ -50,11 +57,9 @@ require_once __DIR__ . '/head.php';
         echo '<td>' . $match['mch_id'] . '</td>';
         echo '<td>' . $teamsName[$match['mch_team1_id']] . ' - ' . $teamsName[$match['mch_team2_id']] . '</td>';
         echo '<td>' . $match['gs_team1'] . ':' . $match['gs_team2'] . '</td>';
+        echo '<td><a href="/match.php?mch_id=' . $match['mch_id'] . '">подробнее</a></td>';
         echo '</tr>';
     }
     ?>
     </tbody>
 </table>
-<?php
-require_once __DIR__ . '/foot.php';
-?>
